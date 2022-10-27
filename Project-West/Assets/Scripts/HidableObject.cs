@@ -20,7 +20,11 @@ public class HidableObject : MonoBehaviour
 
     private void Update()
     {
-        bool playerCanHide = player.GetComponent<PlayerController>().CanHideInObj;
+        bool playerCanHide = false;
+        if (player)
+        {
+            playerCanHide = player.GetComponent<PlayerController>().CanHideInObj;
+        }
         if (playerCanHide && playerInRange && ishideable)
         {
             InteractionIcon.GetComponent<SpriteRenderer>().enabled = true;

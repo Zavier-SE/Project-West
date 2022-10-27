@@ -44,6 +44,10 @@ PrefabInstance:
       propertyPath: InteractionIcon
       value: 
       objectReference: {fileID: 3717062663310864028}
+    - target: {fileID: 3107705479401676188, guid: ded0bada1e9f21344bf0e141651b57bd, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3107705479401676189, guid: ded0bada1e9f21344bf0e141651b57bd, type: 3}
       propertyPath: m_RootOrder
       value: 0

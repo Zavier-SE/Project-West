@@ -127,6 +127,8 @@ public class PlayerController : MonoBehaviour
         }
         CanHideInObj = false;
         GetComponentInChildren<SpriteRenderer>().enabled = false;
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        GetComponent<Revolver>().enabled = false;
     }
 
     private void UnHide(GameObject inObject)
@@ -138,6 +140,8 @@ public class PlayerController : MonoBehaviour
         }
         CanHideInObj = true;
         GetComponentInChildren<SpriteRenderer>().enabled = true;
+        GetComponent<CapsuleCollider2D>().enabled = true;
+        GetComponent<Revolver>().enabled = true;
     }
 
 }

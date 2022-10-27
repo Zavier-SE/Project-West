@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3107705479401676162}
   - component: {fileID: 3107705479401676163}
   - component: {fileID: 4283085066507860525}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Barral
   m_TagString: Hide
   m_Icon: {fileID: 0}
@@ -47,7 +47,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
 --- !u!61 &3107705479401676191
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -135,7 +135,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3107705479709070495}
   - component: {fileID: 3107705479709070492}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BarralSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

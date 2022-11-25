@@ -19,8 +19,8 @@ public class FieldOfView : MonoBehaviour
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         origin = Vector3.zero;
-        viewAngle = 90f;
-        viewRadius = 50;
+        viewAngle = 120f;
+        viewRadius = 70;
     }
 
     private void LateUpdate()
@@ -73,6 +73,7 @@ public class FieldOfView : MonoBehaviour
         mesh.vertices = vertices;
         mesh.uv = uv;
         mesh.triangles = triangles;
+        mesh.RecalculateBounds();
     }
 
     public void SetOrigin(Vector3 origin)

@@ -18,6 +18,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private float speed;
     [SerializeField]
+    private float hearingR;
+    [SerializeField]
     private float nextWayPointDistance;
     [SerializeField]
     private List<Transform> PatrolRoute;
@@ -26,6 +28,18 @@ public class EnemyController : MonoBehaviour
     private Transform target;
     private Vector2 targetPos;
 
+    [SerializeField]
+    private float attackRange = 3;
+    [SerializeField]
+    private float attackTime;
+    [SerializeField]
+    private float attackTimer;
+    [SerializeField]
+    private int damage;
+
+    private GameManager manager;
+
+
     Path path;
     int currentWaypoint = 0;
     bool reachedEndOfPath;
@@ -33,26 +47,30 @@ public class EnemyController : MonoBehaviour
     Seeker seeker;
     Rigidbody2D rb;
 
-    BehaviourTree tree;
-    Node.Status treeStatus;
-
-    public enum ActionState { IDLE, WORKING};
-    ActionState state = ActionState.IDLE;
+    public enum AgentState { Patrol, Invastigat, Chase };
+    AgentState state;
 
     bool playerDetected;
-    float searchTime = 5;
-    float searchTimer;
+    [SerializeField]
+    bool noiseDetected;
+    Vector2 noiseLocation;
+
+    HealthComponent health;
+
+    private void Awake()
+    {
+        manager = GameObject.FindObjectOfType<GameManager>();
+        seeker = GetComponent<Seeker>();
+        rb = GetComponent<Rigidbody2D>();
+        health = GetComponent<HealthComponent>();
+    }
 
     void Start()
     {
         fov = Instantiate(Pf_fov, null).GetComponent<FieldOfView>();
-        seeker = GetComponent<Seeker>();
-        rb = GetComponent<Rigidbody2D>();
 
-        searchTimer = searchTime;
-
-        BuildTree();
-        StartCoroutine("Behave");
+        state = AgentState.Patrol;
+        attackTimer = attackTime;
 
 
         PatrolIndex = 0;
@@ -70,7 +88,6 @@ public class EnemyController : MonoBehaviour
         fov.SetAimDir(GetAimDirection());
         fov.SetViewAngle(fovAngle);
         fov.SetViewRadius(fovRadius);
-        FindTargetPlayer();
 
         if (!reachedEndOfPath)
         {
@@ -81,100 +98,125 @@ public class EnemyController : MonoBehaviour
             Invoke("MoveAlongPath", Random.Range(0, 3.0f));
         }
 
-        Debug.Log(playerDetected);
-    }
-
-    void BuildTree()
-    {
-        tree = new BehaviourTree("Root");
-        Leaf isPlayerDetected = new Leaf("isPlayerDetected", PlayerDetected);
-        Inverter playerNotDetected = new Inverter("playerNotDetected");
-        playerNotDetected.AddChild(isPlayerDetected);
-
-        Leaf PatrolBehaviour = new Leaf("Patrol", Patrol);
-        BehaviourTree PatrolDep = new BehaviourTree("PatrolDependence");
-        PatrolDep.AddChild(playerNotDetected);
-        DpSequence PatrolSeq = new DpSequence("PatrolSequence", PatrolDep);
-        PatrolSeq.AddChild(PatrolBehaviour);
-
-        Leaf ChaseBehaviour = new Leaf("Chase", chasePlayer);
-        BehaviourTree ChaseDep = new BehaviourTree("ChaseDependence");
-        ChaseDep.AddChild(isPlayerDetected);
-        DpSequence ChaseSeq = new DpSequence("ChaseSequence", ChaseDep);
-        ChaseSeq.AddChild(ChaseBehaviour);
-
-        Leaf SearchTarget = new Leaf("Search", SearchAround);
-
-
-        Selector rootSelector = new Selector("rootSelector");
-
-        rootSelector.AddChild(PatrolSeq);
-        rootSelector.AddChild(ChaseSeq);
-        tree.AddChild(rootSelector);
-    }
-
-    Node.Status Patrol()
-    {
-        if (reachedEndOfPath)
+        if (health.isHealthZero())
         {
-                if (PatrolIndex < PatrolRoute.Count - 1)
-                {
-                    PatrolIndex++;
-                }
-                else
-                {
-                    PatrolIndex = 0;
-                }
-                target = PatrolRoute[PatrolIndex];
-                targetPos = target.position;
+            OnDeath();
         }
-        return Node.Status.RUNNING;
+
+        Debug.Log(playerDetected);
+
+        if (attackTimer > 0)
+        {
+            attackTimer -= Time.deltaTime;
+        }
     }
 
-    Node.Status chasePlayer()
+    private void FixedUpdate()
     {
-        
-        target = playerRf;
-        targetPos = target.position;
-        Vector3 dirToPlayer = (playerRf.position - transform.position).normalized;
-        RaycastHit2D raycastHits = Physics2D.Raycast(transform.position, dirToPlayer);
-        if (raycastHits.collider != null)
+        FindTargetPlayer();
+
+        if (state == AgentState.Patrol)
         {
-            if (raycastHits.collider.gameObject.GetComponent<PlayerController>() == null)
+            if (!playerDetected)
             {
-                playerDetected = false;
-                target = null;
-                targetPos = target.position;
-                Debug.Log("Player Lost");
-                return Node.Status.FAILURE;
+                if (!noiseDetected)
+                {
+                    Patrol();
+                } else if (noiseDetected)
+                {
+                    state = AgentState.Invastigat;
+                }
+            }
+            else if (playerDetected)
+            {
+                state = AgentState.Chase;
             }
         }
+        else if (state == AgentState.Chase)
+        {
+            if (!playerDetected)
+            {
+                if (reachedEndOfPath)
+                {
+                    state = AgentState.Patrol;
+                    target = PatrolRoute[PatrolIndex];
+                    targetPos = target.position;
+                }
+            }
+            else if (playerDetected)
+            {
+                chasePlayer();
+            }
+        } else if (state == AgentState.Invastigat)
+        {
+            if (noiseDetected)
+            {
+                invastigateNoise();
+            }
+            else if (!noiseDetected)
+            {
+                if (reachedEndOfPath)
+                {
+                    state = AgentState.Patrol;
+                    target = PatrolRoute[PatrolIndex];
+                    targetPos = target.position;
+                }
+            }
 
-        return Node.Status.RUNNING;
+            if (Vector3.Distance(transform.position, noiseLocation) <= 2)
+            {
+                noiseDetected = false;
+            }
+
+            if (playerDetected)
+            {
+                chasePlayer();
+            }
+        }
     }
 
-    Node.Status SearchAround()
+    void Patrol()
     {
-        while(searchTimer > 0)
+        if (Vector2.Distance(transform.position, PatrolRoute[PatrolIndex].transform.position) <= 1)
         {
-            targetPos = PickRandomPoint(transform.position, 5);
-            searchTimer--;
-            return Node.Status.RUNNING;
+            if (PatrolIndex < PatrolRoute.Count - 1)
+            {
+                PatrolIndex++;
+            }
+            else
+            {
+                PatrolIndex = 0;
+            }
+            reachedEndOfPath = false;
+            target = PatrolRoute[PatrolIndex];
+            targetPos = target.position;
         }
-        return Node.Status.SUCCESS;
     }
 
-    Node.Status PlayerDetected()
+    void chasePlayer()
     {
-        if (playerDetected)
+        target = playerRf;
+        targetPos = target.position;
+        float distance = Vector3.Distance(target.position, transform.position);
+        if (distance > 7)
         {
-            return Node.Status.SUCCESS;
+            playerDetected = false;
+            targetPos = target.position;
+            target.GetComponent<PlayerController>().state = PlayerController.PlayerState.Undetacted;
+            target = null;
+            Debug.Log("Player Lost!");
         }
-        else
-        {
-            return Node.Status.FAILURE;
-        }
+    }
 
+    void invastigateNoise()
+    {
+        if (noiseDetected)
+        {
+            if (noiseLocation != null)
+            {
+                targetPos = noiseLocation;
+            }
+        }
     }
 
     Vector2 GetAimDirection()
@@ -184,22 +226,34 @@ public class EnemyController : MonoBehaviour
 
     private void FindTargetPlayer()
     {
-        if(Vector3.Distance(transform.position, playerRf.position) < fovRadius)
+        if (Vector3.Distance(transform.position, playerRf.position) < fovRadius)
         {
             Vector3 dirToPlayer = (playerRf.position - transform.position).normalized;
-            if(Vector3.Angle(GetAimDirection(), dirToPlayer) < fovAngle/2f)
+            if (Vector3.Angle(GetAimDirection(), dirToPlayer) < fovAngle / 2f)
             {
-                RaycastHit2D raycastHits= Physics2D.Raycast(transform.position, dirToPlayer, fovRadius);
+                RaycastHit2D raycastHits = Physics2D.Raycast(transform.position, dirToPlayer, fovRadius);
                 Debug.DrawRay(transform.position, dirToPlayer, Color.green);
                 if (raycastHits.collider != null)
                 {
                     if (raycastHits.collider.gameObject.GetComponent<PlayerController>() != null)
                     {
-                        playerDetected = true;
-                        Debug.Log("Player Detected");
+                        if (raycastHits.collider.gameObject.GetComponent<PlayerController>().state != PlayerController.PlayerState.Hidden)
+                        {
+                            playerDetected = true;
+                            raycastHits.collider.gameObject.GetComponent<PlayerController>().state = PlayerController.PlayerState.Detected;
+                            Debug.Log("Player Detected");
+                        }
                     }
                 }
             }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            Attack(collision.gameObject);
         }
     }
 
@@ -213,7 +267,7 @@ public class EnemyController : MonoBehaviour
 
     void MoveAlongPath()
     {
-        if(path == null)
+        if (path == null)
         {
             return;
         }
@@ -259,12 +313,37 @@ public class EnemyController : MonoBehaviour
         return point;
     }
 
-    IEnumerator Behave()
+
+    public void hearSound(Vector2 atLocation)
     {
-        while (true)
+        noiseLocation = atLocation;
+        noiseDetected = true;
+    }
+
+    public void OnDeath()
+    {
+        if (manager)
         {
-            treeStatus = tree.Process();
-            yield return new WaitForSeconds(0.5f);
+            manager.KilledEnemies += 1;
+        }
+        if (playerDetected)
+        {
+            target.GetComponent<PlayerController>().state = PlayerController.PlayerState.Undetacted;
+        }
+        Destroy(fov.gameObject);
+        Destroy(this.gameObject);
+    }
+
+    void Attack(GameObject target)
+    {
+        if(attackTimer <= 0)
+        {
+            HealthComponent targetH = target.GetComponent<HealthComponent>();
+            if (targetH)
+            {
+                targetH.takeDamage(damage);
+                attackTimer = attackTime;
+            }
         }
     }
 }

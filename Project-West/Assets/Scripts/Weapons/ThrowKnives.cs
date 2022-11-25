@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ThrowKnives : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class ThrowKnives : MonoBehaviour
     [SerializeField]
     float ThrowingVelocity;
 
+    [SerializeField]
+    TextMeshProUGUI InHand;
+
     void Awake()
     {
         KnivesRemain = TotalKnives;
@@ -34,6 +38,8 @@ public class ThrowKnives : MonoBehaviour
                 Fire();
             }
         }
+
+        InHand.text = KnivesRemain.ToString();
     }
 
     void Fire()

@@ -23,11 +23,14 @@ public class PlayerController : MonoBehaviour
     bool isfaceRight;
     public bool CanHideInObj;
 
+    private GameManager manager;
+
     private void Awake()
     {
         state = PlayerState.Undetacted;
         rb = this.GetComponent<Rigidbody2D>();
         anim = this.GetComponentInChildren<Animator>();
+        manager = GameObject.FindObjectOfType<GameManager>();
 
         CanHideInObj = false;
         isfaceRight = true;
@@ -54,6 +57,7 @@ public class PlayerController : MonoBehaviour
                 if (!InteractPressed && Input.GetButtonDown("Interact"))
                 {
                     Hide(hideableobjs);
+                    rb.velocity = Vector2.zero;
                     InteractPressed = true;
                 }
             }
@@ -62,10 +66,27 @@ public class PlayerController : MonoBehaviour
         if (state == PlayerState.Hidden)
         {
             CanHideInObj = false;
+            if (manager)
+            {
+                manager.hidingTime += Time.deltaTime;
+            }
             if (!InteractPressed && Input.GetButtonDown("Interact"))
             {
                 UnHide(hideableobjs);
                 InteractPressed = true;
+            }
+        }
+
+        if(state == PlayerState.Detected)
+        {
+            if (manager)
+            {
+                manager.detectedTime += Time.deltaTime;
+            }
+            CanHideInObj = false;
+            if(GameObject.FindObjectsOfType<EnemyController>() == null)
+            {
+                state = PlayerState.Undetacted;
             }
         }
     }
@@ -142,6 +163,11 @@ public class PlayerController : MonoBehaviour
         GetComponentInChildren<SpriteRenderer>().enabled = true;
         GetComponent<CapsuleCollider2D>().enabled = true;
         GetComponent<Revolver>().enabled = true;
+    }
+
+    public PlayerController.PlayerState getPlayerState()
+    {
+        return state;
     }
 
 }

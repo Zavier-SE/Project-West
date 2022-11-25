@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Revolver : MonoBehaviour
 {
@@ -14,14 +16,22 @@ public class Revolver : MonoBehaviour
     [SerializeField]
     int MagazineSize;
     [SerializeField]
+    int RoundsInGun;
+    [SerializeField]
     int RoundsRemain;
 
     [SerializeField]
     float MuzzleVelocity;
 
+    [SerializeField]
+    TextMeshProUGUI InGun;
+    [SerializeField]
+    TextMeshProUGUI Total;
+
+
     void Awake()
     {
-        RoundsRemain = MagazineSize;
+        RoundsInGun = MagazineSize;
     }
 
 
@@ -29,17 +39,34 @@ public class Revolver : MonoBehaviour
     {
         if (Input.GetButtonDown("Shoot"))
         {
-            if(RoundsRemain > 0)
+            if(RoundsInGun > 0)
             {
-                RoundsRemain--;
+                RoundsInGun--;
                 Fire();
             }
         }
 
-        /*if (Input.GetButtonDown("Reload"))
+        InGun.text = RoundsInGun.ToString();
+        Total.text = RoundsRemain.ToString();
+
+        if (Input.GetButtonDown("Reload"))
         {
-            RoundsRemain = MagazineSize;
-        }*/
+            if(RoundsRemain > 0)
+            {
+                if(RoundsRemain >= MagazineSize - RoundsInGun)
+                {
+                    RoundsRemain = RoundsRemain - (MagazineSize - RoundsInGun);
+                    RoundsInGun = MagazineSize;
+                }
+
+                if(RoundsRemain < MagazineSize - RoundsInGun)
+                {
+                    RoundsInGun += RoundsRemain;
+                    RoundsRemain = 0;
+                }
+            }
+
+        }
     }
 
     void Fire()

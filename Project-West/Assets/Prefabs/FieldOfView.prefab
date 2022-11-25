@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6044376261925900075}
   - component: {fileID: 6044376261925900072}
   - component: {fileID: 7478790546098343215}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: FieldOfView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   obstructsLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -114,4 +114,4 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: -1004344737
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1

@@ -6,6 +6,7 @@ public class HealthComponent : MonoBehaviour
 {
     [SerializeField]
     private int maxHealth;
+    [SerializeField]
     private int currentHealth;
     public int CurrentHealth
     {
@@ -26,7 +27,7 @@ public class HealthComponent : MonoBehaviour
             currentHealth -= damage;
         }
 
-        if(currentHealth < 0)
+        if(currentHealth <= 0)
         {
             currentHealth = 0;
         }

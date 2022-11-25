@@ -137,5 +137,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HitEffect: {fileID: 875052992282048225, guid: 432fa8967d387f04abe2fb7614dfcde8, type: 3}
+  NoisePoint: {fileID: 3093122532344326169, guid: 18e4bc63aa172534daa0b19e7268e06e, type: 3}
   isRetrievable: 0
+  isLoud: 1
   MaxDistance: 5
+  damage: 30

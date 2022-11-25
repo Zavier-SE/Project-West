@@ -46,6 +46,9 @@ GameObject:
   - component: {fileID: 6008770986190018782}
   - component: {fileID: 6008770986190018771}
   - component: {fileID: 416066585}
+  - component: {fileID: 751229077}
+  - component: {fileID: 751229084}
+  - component: {fileID: 1797629745141950191}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -157,7 +160,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6008770986190018777}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04d918445da820b44ae17fe963fa9ed8, type: 3}
   m_Name: 
@@ -166,8 +169,57 @@ MonoBehaviour:
   bulletpf: {fileID: 1142038459129232241, guid: c651270af10640e498bd6fbd17ab14a9, type: 3}
   Aim: {fileID: 0}
   MagazineSize: 6
-  RoundsRemain: 0
+  RoundsInGun: 6
+  RoundsRemain: 24
   MuzzleVelocity: 1000
+  InGun: {fileID: 0}
+  Total: {fileID: 0}
+--- !u!114 &751229077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6008770986190018777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdf5180e26664db409cd2a71e2e4197e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throwingPoint: {fileID: 1300238470}
+  knifepf: {fileID: 5245944421373034189, guid: 737a7c18ced160e4dae9fba29c84d627, type: 3}
+  Aim: {fileID: 0}
+  TotalKnives: 6
+  KnivesRemain: 0
+  ThrowingVelocity: 1000
+--- !u!114 &751229084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6008770986190018777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac21d84fd7dd3f47b303e9c1585f88d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throwKnivesIcon: {fileID: 0}
+  revolverIcon: {fileID: 0}
+--- !u!114 &1797629745141950191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6008770986190018777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1af2350e7f726e4898e1a695cef76a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0
 --- !u!1 &6008770986796626757
 GameObject:
   m_ObjectHideFlags: 0

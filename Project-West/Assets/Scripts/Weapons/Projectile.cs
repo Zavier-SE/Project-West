@@ -10,10 +10,18 @@ public class Projectile : MonoBehaviour
     GameObject HitEffect;
 
     [SerializeField]
+    GameObject NoisePoint;
+
+    [SerializeField]
     bool isRetrievable;
     bool used;
     [SerializeField]
+    bool isLoud;
+    [SerializeField]
     float MaxDistance;
+
+    [SerializeField]
+    int damage;
 
     Vector3 StartPos;
 
@@ -43,6 +51,15 @@ public class Projectile : MonoBehaviour
     {
         if (!collision.gameObject.CompareTag("Player"))
         {
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                HealthComponent EnemyHealth = collision.gameObject.GetComponent<HealthComponent>();
+                if (EnemyHealth)
+                {
+                    EnemyHealth.takeDamage(damage);
+                }
+            }
+
             if (!isRetrievable)
             {
                 Hit();
@@ -72,6 +89,10 @@ public class Projectile : MonoBehaviour
 
     private void Hit()
     {
+        if (isLoud)
+        {
+            Instantiate(NoisePoint, transform.position, Quaternion.identity);
+        }
         if (!isRetrievable)
         {
             if (HitEffect)

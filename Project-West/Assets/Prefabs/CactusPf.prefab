@@ -13,9 +13,11 @@ GameObject:
   - component: {fileID: 4004007061362192583}
   - component: {fileID: 4004007061362192576}
   - component: {fileID: 4004007061362192577}
+  - component: {fileID: 6989016886661468599}
+  - component: {fileID: 3704459751540443199}
   m_Layer: 0
   m_Name: CactusPf
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -80,12 +82,18 @@ MonoBehaviour:
   fovAngle: 60
   Pf_fov: {fileID: 6044376261925900069, guid: e1dd3ab492ffe8f4f8e465b6da91f3f5, type: 3}
   playerRf: {fileID: 0}
-  speed: 50
+  speed: 6500
+  hearingR: 3
   nextWayPointDistance: 1
   PatrolRoute:
   - {fileID: 0}
   - {fileID: 0}
   target: {fileID: 0}
+  attackRange: 5
+  attackTime: 5
+  attackTimer: 0
+  damage: 10
+  noiseDetected: 0
 --- !u!50 &4004007061362192576
 Rigidbody2D:
   serializedVersion: 4
@@ -98,7 +106,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 40
   m_LinearDrag: 1.5
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -123,6 +131,36 @@ CapsuleCollider2D:
   m_Offset: {x: -0.006799221, y: -0.08316803}
   m_Size: {x: 0.36401272, y: 0.5}
   m_Direction: 0
+--- !u!114 &6989016886661468599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4004007061362192578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1af2350e7f726e4898e1a695cef76a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0
+--- !u!58 &3704459751540443199
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4004007061362192578}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!1001 &4004007061915734971
 PrefabInstance:
   m_ObjectHideFlags: 0

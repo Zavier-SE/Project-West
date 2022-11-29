@@ -12,11 +12,13 @@ public class MenuController : MonoBehaviour
     private Button simpleCompanion;
     private Button fuzzyCompanion;
     private Button CalcPlayerModel;
+    private Button Exit;
     private GameManager manager;
 
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = true;
         if (!manager)
         {
             manager = GameObject.FindObjectOfType<GameManager>();
@@ -44,6 +46,11 @@ public class MenuController : MonoBehaviour
                 CalcPlayerModel = button;
                 CalcPlayerModel.onClick.AddListener(calculatePlayerModel);
             }
+            if(button.name == "Exit")
+            {
+                Exit = button;
+                Exit.onClick.AddListener(ExitGame);
+            }
         }
     }
 
@@ -60,6 +67,11 @@ public class MenuController : MonoBehaviour
     void simpleCompanionLevel()
     {
         SceneManager.LoadScene("Level_3");
+    }    
+
+    void ExitGame()
+    {
+        Application.Quit();
     }
 
     void calculatePlayerModel()

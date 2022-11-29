@@ -976,9 +976,9 @@ RectTransform:
   m_Father: {fileID: 979052848}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -220, y: -220}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 186, y: 51}
   m_SizeDelta: {x: 300, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &141829460
@@ -1636,7 +1636,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2030225086}
-  m_RootOrder: 41
+  m_RootOrder: 38
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &229936877
 BoxCollider2D:
@@ -15695,10 +15695,10 @@ Transform:
   - {fileID: 1840343949}
   - {fileID: 1197321797}
   - {fileID: 1251185631}
+  - {fileID: 229936876}
   - {fileID: 348352830}
   - {fileID: 1497014064}
   - {fileID: 2065099689}
-  - {fileID: 229936876}
   - {fileID: 1126837744}
   - {fileID: 851435893}
   - {fileID: 287733009}
